@@ -14,7 +14,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/rsalazarjelp/n8n-node-jelp-delivery.git"
+		"url": "https://github.com/rsalazarjelp/n8n-node-jelp-delivery.git"
 	},
 	"engines": {
 		"node": ">=20.15"
