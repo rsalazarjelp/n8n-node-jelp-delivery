@@ -1,19 +1,20 @@
 {
 	"name": "n8n-node-jelp-delivery",
 	"version": "0.1.0",
-	"description": "",
+	"description": "Jelp Delivery official n8n node",
 	"keywords": [
-		"n8n-node-jelp-delivery"
+		"n8n-node-jelp-delivery",
+		"n8n-community-node-package"
 	],
 	"license": "MIT",
-	"homepage": "",
+	"homepage": "https://www.jelp.delivery",
 	"author": {
 		"name": "Raúl Salazar",
-		"email": ""
+		"email": "rsalazar@jelp.delivery"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/<...>/n8n-nodes-<...>.git"
+		"url": "git+https://github.com/rsalazarjelp/n8n-node-jelp-delivery.git"
 	},
 	"engines": {
 		"node": ">=20.15"
