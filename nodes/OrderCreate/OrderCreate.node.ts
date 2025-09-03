@@ -198,21 +198,22 @@ export class OrderCreate implements INodeType {
 			},
 			{
 				displayName: 'Products',
-				name: 'prodicts',
+				name: 'products',
 				type: 'string',
 				default: '',
 				description: 'Product details in JSON format',
-				placeholder: '[{"sku":"123","productName":"Product 1","productPrice":100,"productQuantity":1,"productTotal":100,"productWidth":10,"productHeight":10,"productDepth":10,"productWeight":1,"productImage":"http://example.com/image.jpg"}]',
+				placeholder: '[{"sku":"123","name":"Product 1","price":100,"quantity":1}]',
 			},
 		],
 	};
 
 	async execute(this: IExecuteFunctions) {
+		const baseUrl = 'https://dev.workspaces.api.sad.jelp.io'
 		const items = this.getInputData();
 		const returnData = [];
 		const credentials = await this.getCredentials('jelpDeliveryApi');
 		for (let i = 0; i < items.length; i++) {
-			const productsRaw = this.getNodeParameter('prodicts', i) as string;
+			const productsRaw = this.getNodeParameter('products', i) as string;
 			let products: any[] = [];
 			try {
 				products = JSON.parse(productsRaw);
@@ -273,7 +274,7 @@ export class OrderCreate implements INodeType {
 
 			const options = {
 				method: 'POST' as 'POST',
-				url: 'https://api.torredecontrol.io/dev/v3/order',
+				url: `${baseUrl}/dev/v3/order`,
 				headers: {
 					'api-key': credentials.key,
 					'sign': credentials.sign,

@@ -1,15 +1,15 @@
 import { INodeType, INodeTypeDescription, NodeConnectionType, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
 
-export class Order implements INodeType {
+export class OrderStatusChange implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Order detail by id',
-		name: 'order',
+		displayName: 'Order status change',
+		name: 'orderStatusChange',
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Get order details from Jelp Delivery',
+		description: 'Change the status of an order in Jelp Delivery',
 		defaults: {
-			name: 'Get Order',
+			name: 'Order Status Change',
 		},
 		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
@@ -23,11 +23,15 @@ export class Order implements INodeType {
 		properties: [
 			{
 				displayName: 'Order',
-				name: 'reference',
+				name: 'order',
 				type: 'string',
 				default: '',
-				description: 'Folio or publicId of the order',
-				required: true
+			},
+			{
+				displayName: 'Status',
+				name: 'status',
+				type: 'string',
+				default: '',
 			},
 		],
 	};
@@ -38,16 +42,21 @@ export class Order implements INodeType {
 		const returnData: INodeExecutionData[] = [];
 
 		for (let i = 0; i < items.length; i++) {
-			const reference = this.getNodeParameter('reference', i) as string;
-			const url = `${baseUrl}/dev/v1/order/${reference}`;
+			const url = `${baseUrl}/dev/v3/order/status/update`;
+
+			const orderData = {
+				referenceId: this.getNodeParameter('order', i),
+				status: this.getNodeParameter('status', i),
+			};
 
 			const options = {
-				method: 'GET' as const,
+				method: 'POST' as const,
 				url,
 				headers: {
 					Accept: 'application/json',
 					'Content-Type': 'application/json',
 				},
+				body: orderData,
 			};
 
 			const response = await this.helpers.requestWithAuthentication.call(this, 'jelpDeliveryApi', options);
