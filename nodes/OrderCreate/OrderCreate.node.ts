@@ -208,7 +208,7 @@ export class OrderCreate implements INodeType {
 	};
 
 	async execute(this: IExecuteFunctions) {
-		const baseUrl = 'https://dev.workspaces.api.sad.jelp.io'
+		const baseUrl = 'https://workspaces.api.sad.jelp.io'
 		const items = this.getInputData();
 		const returnData = [];
 		const credentials = await this.getCredentials('jelpDeliveryApi');

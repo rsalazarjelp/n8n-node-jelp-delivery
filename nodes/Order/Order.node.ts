@@ -33,7 +33,7 @@ export class Order implements INodeType {
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-		const baseUrl = 'https://dev.workspaces.api.sad.jelp.io'
+		const baseUrl = 'https://workspaces.api.sad.jelp.io'
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 
