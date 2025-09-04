@@ -10,7 +10,7 @@ export class OrderOverflow implements INodeType {
 		version: 1,
 		description: 'Overflow an order in Jelp Delivery',
 		defaults: {
-			name: 'Order Overflow',
+			name: 'Overflow order',
 		},
 		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],

@@ -3,14 +3,14 @@ import { BASE_URL } from '../constants';
 
 export class BranchList implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'List of branches',
+		displayName: 'Branches',
 		name: 'branchList',
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
 		description: 'Get a list of branches from Jelp Delivery',
 		defaults: {
-			name: 'Get Branches',
+			name: 'Branches',
 		},
 		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],

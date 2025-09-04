@@ -8,7 +8,7 @@ export class OrderOverflowCancel implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Cancel overflowed of an order in Jelp Delivery',
+		description: 'Cancel overflow of an order in Jelp Delivery',
 		defaults: {
 			name: 'Cancel Order Overflow',
 		},

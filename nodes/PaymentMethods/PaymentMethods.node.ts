@@ -1,16 +1,16 @@
 import { INodeType, INodeTypeDescription, NodeConnectionType, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
 import { BASE_URL } from '../constants';
 
-export class OrderStatusChange implements INodeType {
+export class PaymentMethods implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Change order status',
-		name: 'orderStatusChange',
+		displayName: 'Payment Methods',
+		name: 'order',
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Change the status of an order in Jelp Delivery',
+		description: 'Available payment methods from Jelp Delivery',
 		defaults: {
-			name: 'Change order status',
+			name: 'Get Payment Methods',
 		},
 		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
@@ -22,18 +22,6 @@ export class OrderStatusChange implements INodeType {
 			},
 		],
 		properties: [
-			{
-				displayName: 'Order',
-				name: 'order',
-				type: 'string',
-				default: '',
-			},
-			{
-				displayName: 'Status',
-				name: 'status',
-				type: 'string',
-				default: '',
-			},
 		],
 	};
 
@@ -42,21 +30,15 @@ export class OrderStatusChange implements INodeType {
 		const returnData: INodeExecutionData[] = [];
 
 		for (let i = 0; i < items.length; i++) {
-			const url = `${BASE_URL}/dev/v3/order/status/update`;
-
-			const orderData = {
-				referenceId: this.getNodeParameter('order', i),
-				status: this.getNodeParameter('status', i),
-			};
+			const url = `${BASE_URL}/dev/v1/paymentMethods`;
 
 			const options = {
-				method: 'POST' as const,
+				method: 'GET' as const,
 				url,
 				headers: {
 					Accept: 'application/json',
 					'Content-Type': 'application/json',
 				},
-				body: orderData,
 			};
 
 			const response = await this.helpers.requestWithAuthentication.call(this, 'jelpDeliveryApi', options);

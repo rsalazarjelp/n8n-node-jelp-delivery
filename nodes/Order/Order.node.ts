@@ -3,7 +3,7 @@ import { BASE_URL } from '../constants';
 
 export class Order implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Order detail by id',
+		displayName: 'Get Order',
 		name: 'order',
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
