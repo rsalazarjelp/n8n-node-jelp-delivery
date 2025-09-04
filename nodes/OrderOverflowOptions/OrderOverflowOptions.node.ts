@@ -1,16 +1,16 @@
 import { INodeType, INodeTypeDescription, NodeConnectionType, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
 import { BASE_URL } from '../constants';
 
-export class Order implements INodeType {
+export class OrderOverflowOptions implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Order detail by id',
-		name: 'order',
+		displayName: 'Order overflow options',
+		name: 'orderOverflowOptions',
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Get order details from Jelp Delivery',
+		description: 'Options for order overflow from Jelp Delivery',
 		defaults: {
-			name: 'Get Order',
+			name: 'Order Overflow Options',
 		},
 		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
@@ -23,12 +23,10 @@ export class Order implements INodeType {
 		],
 		properties: [
 			{
-				displayName: 'Order',
-				name: 'reference',
+				displayName: 'Public Id',
+				name: 'publicId',
 				type: 'string',
 				default: '',
-				description: 'Folio or publicId of the order',
-				required: true
 			},
 		],
 	};
@@ -38,8 +36,7 @@ export class Order implements INodeType {
 		const returnData: INodeExecutionData[] = [];
 
 		for (let i = 0; i < items.length; i++) {
-			const reference = this.getNodeParameter('reference', i) as string;
-			const url = `${BASE_URL}/dev/v1/order/${reference}`;
+			const url = `${BASE_URL}/api/v1/order/${this.getNodeParameter('publicId', i)}/providers/quote`;
 
 			const options = {
 				method: 'GET' as const,

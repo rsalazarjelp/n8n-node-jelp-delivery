@@ -1,4 +1,5 @@
 import { INodeType, INodeTypeDescription, NodeConnectionType, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
+import { BASE_URL } from '../constants';
 
 export class OrderStatusChange implements INodeType {
 	description: INodeTypeDescription = {
@@ -37,12 +38,11 @@ export class OrderStatusChange implements INodeType {
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-		const baseUrl = 'https://workspaces.api.sad.jelp.io'
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 
 		for (let i = 0; i < items.length; i++) {
-			const url = `${baseUrl}/dev/v3/order/status/update`;
+			const url = `${BASE_URL}/dev/v3/order/status/update`;
 
 			const orderData = {
 				referenceId: this.getNodeParameter('order', i),

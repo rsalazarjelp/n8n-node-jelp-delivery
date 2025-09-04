@@ -1,4 +1,5 @@
 import { INodeType, INodeTypeDescription, NodeConnectionType, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
+import { BASE_URL } from '../constants';
 
 export class OrderOverflow implements INodeType {
 	description: INodeTypeDescription = {
@@ -21,7 +22,7 @@ export class OrderOverflow implements INodeType {
 			},
 		],
 		properties: [
-			{
+		{
 				displayName: 'Public Id',
 				name: 'order',
 				type: 'string',
@@ -49,12 +50,11 @@ export class OrderOverflow implements INodeType {
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-		const baseUrl = 'https://workspaces.api.sad.jelp.io'
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
 
 		for (let i = 0; i < items.length; i++) {
-			const url = `${baseUrl}/api/v1/workspace-partnership/services/overflow`;
+			const url = `${BASE_URL}/api/v1/workspace-partnership/services/overflow`;
 
 			const orderData = {
 				order: this.getNodeParameter('order', i),

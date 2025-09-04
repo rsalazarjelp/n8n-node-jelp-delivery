@@ -1,4 +1,5 @@
-import { INodeType, INodeTypeDescription, NodeConnectionType } from 'n8n-workflow';
+import { INodeType, INodeTypeDescription, NodeConnectionType, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
+import { BASE_URL } from '../constants';
 
 export class BranchList implements INodeType {
 	description: INodeTypeDescription = {
@@ -20,19 +21,8 @@ export class BranchList implements INodeType {
 				required: true,
 			},
 		],
-		requestDefaults: {
-			baseURL: 'https://api.torredecontrol.io',
-			url: '/dev/v1/branches',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-			},
-			qs: {
-				limit: '={{ $parameter["limit"] || 50 }}',
-				page: '={{ $parameter["page"] || 0 }}',
-			}
-		},
-		properties: [ {
+		properties: [
+			{
 				displayName: 'Limit',
 				name: 'limit',
 				type: 'number',
@@ -41,15 +31,55 @@ export class BranchList implements INodeType {
 				},
 				default: 50,
 				description: 'Max number of results to return',
-			},{
+			},
+			{
 				displayName: 'Page',
 				name: 'page',
 				type: 'number',
 				typeOptions: {
-					minValue:0,
+					minValue: 0,
 				},
 				default: 0,
 				description: 'Page number for pagination',
-			},],
+			},
+		],
 	};
+
+	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
+		const items = this.getInputData();
+		const returnData: INodeExecutionData[] = [];
+
+		for (let i = 0; i < items.length; i++) {
+			const limit = this.getNodeParameter('limit', i) as number;
+			const page = this.getNodeParameter('page', i) as number;
+
+			const options = {
+				method: 'GET' as const,
+				url: `${BASE_URL}/dev/v1/branches`,
+				headers: {
+					Accept: 'application/json',
+					'Content-Type': 'application/json',
+				},
+				qs: {
+					limit,
+					page,
+				},
+			};
+
+			const response = await this.helpers.requestWithAuthentication.call(this, 'jelpDeliveryApi', options);
+
+			let data;
+			if (typeof response === 'string') {
+				data = JSON.parse(response);
+			} else {
+				data = response;
+			}
+
+			returnData.push({
+				json: data,
+			});
+		}
+
+		return [returnData];
+	}
 }

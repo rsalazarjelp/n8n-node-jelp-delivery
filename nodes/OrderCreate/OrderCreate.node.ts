@@ -1,4 +1,5 @@
 import { INodeType, INodeTypeDescription, IExecuteFunctions, NodeConnectionType } from 'n8n-workflow';
+import { BASE_URL } from '../constants';
 
 export class OrderCreate implements INodeType {
 	description: INodeTypeDescription = {
@@ -208,7 +209,6 @@ export class OrderCreate implements INodeType {
 	};
 
 	async execute(this: IExecuteFunctions) {
-		const baseUrl = 'https://workspaces.api.sad.jelp.io'
 		const items = this.getInputData();
 		const returnData = [];
 		const credentials = await this.getCredentials('jelpDeliveryApi');
@@ -274,7 +274,7 @@ export class OrderCreate implements INodeType {
 
 			const options = {
 				method: 'POST' as 'POST',
-				url: `${baseUrl}/dev/v3/order`,
+				url: `${BASE_URL}/dev/v3/order`,
 				headers: {
 					'api-key': credentials.key,
 					'sign': credentials.sign,

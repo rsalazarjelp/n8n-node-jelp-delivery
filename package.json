@@ -38,12 +38,13 @@
 		],
 		"nodes": [
 			"dist/nodes/BranchList/BranchList.node.js",
-			"dist/nodes/BranchList/Order.node.js",
-			"dist/nodes/BranchList/OrderCreate.node.js",
-			"dist/nodes/BranchList/OrderOverflow.node.js",
-			"dist/nodes/BranchList/OrderOverflowCancel.node.js",
-			"dist/nodes/BranchList/OrderQuote.node.js",
-			"dist/nodes/BranchList/OrderStatusChange.node.js"
+			"dist/nodes/Order/Order.node.js",
+			"dist/nodes/OrderCreate/OrderCreate.node.js",
+			"dist/nodes/OrderOverflow/OrderOverflow.node.js",
+			"dist/nodes/OrderOverflowCancel/OrderOverflowCancel.node.js",
+			"dist/nodes/OrderQuote/OrderQuote.node.js",
+			"dist/nodes/OrderStatusChange/OrderStatusChange.node.js",
+			"dist/nodes/OrderOverflowOptions/OrderOverflowOptions.node.js"
 		]
 	},
 	"devDependencies": {
