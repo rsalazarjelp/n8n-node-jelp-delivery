@@ -4,7 +4,7 @@ import { BASE_URL } from '../constants';
 export class PaymentMethods implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Payment Methods',
-		name: 'order',
+		name: 'paymentMethods',
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
