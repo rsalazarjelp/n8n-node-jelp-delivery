@@ -23,7 +23,7 @@ export class OrderOverflowOptions implements INodeType {
 		],
 		properties: [
 			{
-				displayName: 'Public Id',
+				displayName: 'Public ID',
 				name: 'publicId',
 				type: 'string',
 				default: '',

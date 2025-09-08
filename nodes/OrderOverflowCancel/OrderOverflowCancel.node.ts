@@ -4,7 +4,7 @@ import { BASE_URL } from '../constants';
 export class OrderOverflowCancel implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Cancel order overflow',
-		name: 'orderCancelOverflow',
+		name: 'orderOverflowCancel',
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
@@ -23,7 +23,7 @@ export class OrderOverflowCancel implements INodeType {
 		],
 		properties: [
 			{
-				displayName: 'Public Id',
+				displayName: 'Public ID',
 				name: 'order',
 				type: 'string',
 				default: '',

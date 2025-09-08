@@ -4,7 +4,7 @@ import { BASE_URL } from '../constants';
 export class OrderQuote implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Quote order',
-		name: 'quoteOrder',
+		name: 'orderQuote',
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
@@ -23,7 +23,7 @@ export class OrderQuote implements INodeType {
 		],
 		properties: [
 			{
-				displayName: 'Customer full name',
+				displayName: 'Customer Fullname',
 				name: 'fullName',
 				type: 'string',
 				default: '',
@@ -97,43 +97,43 @@ export class OrderQuote implements INodeType {
 				default: '',
 			},
 			{
-				displayName: 'interiorNumber',
+				displayName: 'Interior Number',
 				name: 'interiorNumber',
 				type: 'string',
 				default: '',
 			},
 			{
-				displayName: 'exteriorNumber',
+				displayName: 'Exterior Number',
 				name: 'exteriorNumber',
 				type: 'string',
 				default: '',
 			},
 			{
-				displayName: 'zipCode',
+				displayName: 'Zip Code',
 				name: 'zipCode',
 				type: 'string',
 				default: '',
 			},
 			{
-				displayName: 'cityName',
+				displayName: 'City',
 				name: 'cityName',
 				type: 'string',
 				default: '',
 			},
 			{
-				displayName: 'fullAddress',
+				displayName: 'Full Address',
 				name: 'fullAddress',
 				type: 'string',
 				default: '',
 			},
 			{
-				displayName: 'addressType',
+				displayName: 'Address Type',
 				name: 'addressType',
 				type: 'string',
 				default: '',
 			},
 			{
-				displayName: 'references',
+				displayName: 'References',
 				name: 'references',
 				type: 'string',
 				default: '',
