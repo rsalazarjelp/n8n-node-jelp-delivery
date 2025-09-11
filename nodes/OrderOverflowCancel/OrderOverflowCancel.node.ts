@@ -8,11 +8,11 @@ export class OrderOverflowCancel implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Cancel overflow of an order in Jelp Delivery',
+		description: 'Cancel overflow of an order in Jelp Delivery, needs public ID',
 		defaults: {
 			name: 'Cancel Order Overflow',
 		},
-		inputs: [NodeConnectionType.Main],
+		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [

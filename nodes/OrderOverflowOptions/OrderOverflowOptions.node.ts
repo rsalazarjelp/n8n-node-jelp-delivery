@@ -8,11 +8,11 @@ export class OrderOverflowOptions implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Options for order overflow from Jelp Delivery',
+		description: 'List overflow options for an order and info needed like providers that can deliver it, workspacePartnership, partnership of each provider, and quote for each provider',
 		defaults: {
 			name: 'Order Overflow Options',
 		},
-		inputs: [NodeConnectionType.Main],
+		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [

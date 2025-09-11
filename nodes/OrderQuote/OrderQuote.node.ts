@@ -8,11 +8,11 @@ export class OrderQuote implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Quote an order in Jelp Delivery',
+		description: 'Quote an order in Jelp Delivery, needs customer full name, latitude, longitude, phone, country code, branch, payment method, total, is paid, full address, city, state, zip code, items and partnership',
 		defaults: {
 			name: 'Quote Order',
 		},
-		inputs: [NodeConnectionType.Main],
+		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [

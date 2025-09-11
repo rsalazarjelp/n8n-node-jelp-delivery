@@ -8,11 +8,11 @@ export class OrderOverflow implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Overflow an order in Jelp Delivery',
+		description: 'Overflow an order in Jelp Delivery, needs public ID, partnership, workspace partnership and vehicle type',
 		defaults: {
 			name: 'Overflow order',
 		},
-		inputs: [NodeConnectionType.Main],
+		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [

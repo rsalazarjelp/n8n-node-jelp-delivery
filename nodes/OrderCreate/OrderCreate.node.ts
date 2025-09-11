@@ -8,12 +8,12 @@ export class OrderCreate implements INodeType {
 		icon: { light: 'file:OrderCreate.svg', dark: 'file:OrderCreate.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Create an order in Jelp Delivery',
+		description: 'Create an order in Jelp Delivery, needs first name, last name, latitude, longitude, phone, country code, branch, payment method, total, subtotal, is paid, paid with, vehicle types, delivery type, public ID and tracking ID',
 		defaults: {
 			name: 'Create Order',
 		},
 
-		inputs: [NodeConnectionType.Main],
+		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
 		outputs: [NodeConnectionType.Main],
 		credentials: [
 			{

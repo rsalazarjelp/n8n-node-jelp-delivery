@@ -8,11 +8,11 @@ export class Order implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Get order details from Jelp Delivery',
+		description: 'Get order details from Jelp Delivery, needs order ID',
 		defaults: {
 			name: 'Get Order',
 		},
-		inputs: [NodeConnectionType.Main],
+		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [

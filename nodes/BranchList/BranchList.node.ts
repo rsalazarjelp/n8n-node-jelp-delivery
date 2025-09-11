@@ -8,11 +8,11 @@ export class BranchList implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Get a list of branches from Jelp Delivery',
+		description: 'Get a list of branches from Jelp Delivery, uses limit and page for pagination',
 		defaults: {
 			name: 'Branches',
 		},
-		inputs: [NodeConnectionType.Main],
+		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [

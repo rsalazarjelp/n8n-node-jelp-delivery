@@ -12,7 +12,7 @@ export class PaymentMethods implements INodeType {
 		defaults: {
 			name: 'Get Payment Methods',
 		},
-		inputs: [NodeConnectionType.Main],
+		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [

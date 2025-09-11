@@ -10,9 +10,9 @@ export class OrderStatusChange implements INodeType {
 		version: 1,
 		description: 'Change the status of an order in Jelp Delivery',
 		defaults: {
-			name: 'Change order status',
+			name: 'Change order status, needs order ID and status',
 		},
-		inputs: [NodeConnectionType.Main],
+		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [
