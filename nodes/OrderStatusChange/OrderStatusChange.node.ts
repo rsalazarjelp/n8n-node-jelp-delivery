@@ -8,11 +8,11 @@ export class OrderStatusChange implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Change the status of an order in Jelp Delivery',
+		description: 'Change order status, you can cancel and order using the status CANCELED, rest of available status are PENDING, ACCEPTED, DRIVER_IN_BRANCH, TRANSIT, ONSITE and COMPLETED, needs order ID and status',
 		defaults: {
-			name: 'Change order status, needs order ID and status',
+			name: 'Change order status',
 		},
-		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
+		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [

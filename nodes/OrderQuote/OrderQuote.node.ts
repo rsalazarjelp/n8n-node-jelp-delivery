@@ -12,7 +12,7 @@ export class OrderQuote implements INodeType {
 		defaults: {
 			name: 'Quote Order',
 		},
-		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
+		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [

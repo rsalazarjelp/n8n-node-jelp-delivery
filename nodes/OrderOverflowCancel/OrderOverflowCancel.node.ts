@@ -12,7 +12,7 @@ export class OrderOverflowCancel implements INodeType {
 		defaults: {
 			name: 'Cancel Order Overflow',
 		},
-		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
+		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [

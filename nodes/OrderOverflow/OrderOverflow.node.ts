@@ -12,7 +12,7 @@ export class OrderOverflow implements INodeType {
 		defaults: {
 			name: 'Overflow order',
 		},
-		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
+		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [

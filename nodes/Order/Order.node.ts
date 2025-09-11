@@ -12,7 +12,7 @@ export class Order implements INodeType {
 		defaults: {
 			name: 'Get Order',
 		},
-		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
+		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [

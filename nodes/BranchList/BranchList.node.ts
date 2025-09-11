@@ -12,7 +12,7 @@ export class BranchList implements INodeType {
 		defaults: {
 			name: 'Branches',
 		},
-		inputs: [NodeConnectionType.Main, NodeConnectionType.AiTool],
+		inputs: [NodeConnectionType.Main],
 		outputs: [NodeConnectionType.Main],
 		usableAsTool: true,
 		credentials: [
