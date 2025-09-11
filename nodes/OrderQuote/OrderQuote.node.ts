@@ -33,14 +33,12 @@ export class OrderQuote implements INodeType {
 				name: 'latitude',
 				type: 'number',
 				default: 0,
-				required: true,
 			},
 			{
 				displayName: 'Longitude',
 				name: 'longitude',
 				type: 'number',
 				default: 0,
-				required: true,
 			},
 			{
 				displayName: 'Phone',

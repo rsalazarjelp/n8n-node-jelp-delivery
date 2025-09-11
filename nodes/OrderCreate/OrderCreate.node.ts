@@ -41,14 +41,12 @@ export class OrderCreate implements INodeType {
 				name: 'latitude',
 				type: 'number',
 				default: 0,
-				required: true,
 			},
 			{
 				displayName: 'Longitude',
 				name: 'longitude',
 				type: 'number',
 				default: 0,
-				required: true,
 			},
 			{
 				displayName: 'Phone',
@@ -189,7 +187,7 @@ export class OrderCreate implements INodeType {
 				displayName: 'Prescription Action',
 				name: 'prescriptionAction',
 				type: 'string',
-				default: 'NONE',
+				default: '',
 			},
 			{
 				displayName: 'Comment',
