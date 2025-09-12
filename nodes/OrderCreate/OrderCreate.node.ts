@@ -8,7 +8,7 @@ export class OrderCreate implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Create an order in Jelp Delivery, needs first name, last name, latitude, longitude, phone, country code, branch, payment method, total, subtotal, is paid, paid with, vehicle types, delivery type, public ID and tracking ID',
+		description: 'Create an order in Jelp Delivery, needs first name, phone, phone, branch, payment method code, total, subtotal, is paid, paid with',
 		defaults: {
 			name: 'Create Order',
 		},
@@ -34,7 +34,6 @@ export class OrderCreate implements INodeType {
 				name: 'firstLastName',
 				type: 'string',
 				default: '',
-				required: true,
 			},
 			{
 				displayName: 'Latitude',
@@ -135,7 +134,6 @@ export class OrderCreate implements INodeType {
 				type: 'string',
 				default: 'MOTORCYCLE',
 				description: 'Comma-separated vehicle types',
-				required: true,
 			},
 			{
 				displayName: 'Is Automatic Assignment',
@@ -148,21 +146,18 @@ export class OrderCreate implements INodeType {
 				name: 'publicId',
 				type: 'string',
 				default: '',
-				required: true,
 			},
 			{
 				displayName: 'Tracking ID',
 				name: 'trackingId',
 				type: 'string',
 				default: '',
-				required: true,
 			},
 			{
 				displayName: 'Order Type',
 				name: 'orderType',
 				type: 'string',
 				default: 'DELIVERY',
-				required: true,
 			},
 			{
 				displayName: 'Pickup Code',
@@ -218,7 +213,15 @@ export class OrderCreate implements INodeType {
 		],
 	};
 
+
+
 	async execute(this: IExecuteFunctions) {
+		function generateUUID() {
+    return 'xxxxxxxxy'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+    });
+}
 		const items = this.getInputData();
 		const returnData = [];
 		const credentials = await this.getCredentials('jelpDeliveryApi');
@@ -230,6 +233,12 @@ export class OrderCreate implements INodeType {
 			} catch (e) {
 				products = [];
 			}
+
+			let trackingId = this.getNodeParameter('trackingId', i)
+			trackingId = (trackingId != null && trackingId != "")?trackingId:generateUUID()
+
+			let publicId =  this.getNodeParameter('publicId', i)
+			publicId = (publicId != null && publicId != '') ? publicId : trackingId
 
 			const orderData = {
 				customer: {
@@ -268,8 +277,8 @@ export class OrderCreate implements INodeType {
 					? String(this.getNodeParameter('vehicleTypes', i)).split(',').map((v: string) => v.trim())
 					: [],
 				isAutomaticAssignment: this.getNodeParameter('isAutomaticAssignment', i),
-				publicId: this.getNodeParameter('publicId', i),
-				trackingId: this.getNodeParameter('trackingId', i),
+				publicId: publicId,
+				trackingId: trackingId,
 				orderType: this.getNodeParameter('orderType', i),
 				pickupCode: this.getNodeParameter('pickupCode', i),
 				deliveryCode: this.getNodeParameter('deliveryCode', i),
