@@ -128,7 +128,7 @@ export class OrderQuote implements INodeType {
 				displayName: 'Address Type',
 				name: 'addressType',
 				type: 'string',
-				default: '',
+				default: 'HOME',
 			},
 			{
 				displayName: 'References',

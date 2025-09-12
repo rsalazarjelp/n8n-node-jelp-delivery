@@ -49,6 +49,12 @@ export class OrderCreate implements INodeType {
 				default: 0,
 			},
 			{
+				displayName: 'Full Address',
+				name: 'fullAddress',
+				type: 'string',
+				default: '',
+			},
+			{
 				displayName: 'Phone',
 				name: 'phone',
 				type: 'string',
@@ -135,7 +141,7 @@ export class OrderCreate implements INodeType {
 				displayName: 'Is Automatic Assignment',
 				name: 'isAutomaticAssignment',
 				type: 'boolean',
-				default: false,
+				default: true,
 			},
 			{
 				displayName: 'Public ID',
@@ -187,11 +193,17 @@ export class OrderCreate implements INodeType {
 				displayName: 'Prescription Action',
 				name: 'prescriptionAction',
 				type: 'string',
-				default: '',
+				default: 'NONE',
 			},
 			{
 				displayName: 'Comment',
 				name: 'comment',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'References',
+				name: 'references',
 				type: 'string',
 				default: '',
 			},
@@ -226,6 +238,8 @@ export class OrderCreate implements INodeType {
 					fullName: `${this.getNodeParameter('firstName', i)} ${this.getNodeParameter('firstLastName', i)}`,
 				},
 				address: {
+					references: this.getNodeParameter('references', i),
+					fullAddress: this.getNodeParameter('fullAddress', i),
 					latitude: this.getNodeParameter('latitude', i),
 					longitude: this.getNodeParameter('longitude', i),
 				},
