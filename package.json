@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-jelp-delivery",
-	"version": "0.1.25",
+	"version": "0.1.26",
 	"description": "Jelp Delivery official n8n node",
 	"keywords": [
 		"n8n-nodes-jelp-delivery",

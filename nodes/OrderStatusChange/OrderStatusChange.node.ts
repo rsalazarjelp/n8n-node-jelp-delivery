@@ -1,4 +1,10 @@
-import { INodeType, INodeTypeDescription, NodeConnectionType, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
+import {
+	INodeType,
+	INodeTypeDescription,
+	NodeConnectionType,
+	INodeExecutionData,
+	IExecuteFunctions,
+} from 'n8n-workflow';
 import { BASE_URL } from '../constants';
 
 export class OrderStatusChange implements INodeType {
@@ -8,7 +14,8 @@ export class OrderStatusChange implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Change order status, you can cancel and order using the status CANCELED, rest of available status are PENDING, ACCEPTED, DRIVER_IN_BRANCH, TRANSIT, ONSITE and COMPLETED, needs order ID and status',
+		description:
+			'Change order status, you can cancel and order using the status CANCELED, rest of available status are PENDING, ACCEPTED, DRIVER_IN_BRANCH, TRANSIT, ONSITE and COMPLETED, needs order ID and status',
 		defaults: {
 			name: 'Change order status',
 		},
@@ -40,39 +47,48 @@ export class OrderStatusChange implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
+		try {
+			for (let i = 0; i < items.length; i++) {
+				const url = `${BASE_URL}/dev/v3/order/status/update`;
 
-		for (let i = 0; i < items.length; i++) {
-			const url = `${BASE_URL}/dev/v3/order/status/update`;
+				const orderData = {
+					referenceId: this.getNodeParameter('order', i),
+					status: this.getNodeParameter('status', i),
+				};
 
-			const orderData = {
-				referenceId: this.getNodeParameter('order', i),
-				status: this.getNodeParameter('status', i),
-			};
+				const options = {
+					method: 'POST' as const,
+					url,
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
+					body: orderData,
+				};
 
-			const options = {
-				method: 'POST' as const,
-				url,
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-				body: orderData,
-			};
+				const response = await this.helpers.requestWithAuthentication.call(
+					this,
+					'jelpDeliveryApi',
+					options,
+				);
 
-			const response = await this.helpers.requestWithAuthentication.call(this, 'jelpDeliveryApi', options);
+				let data;
+				if (typeof response === 'string') {
+					data = JSON.parse(response);
+				} else {
+					data = response;
+				}
 
-			let data;
-			if (typeof response === 'string') {
-				data = JSON.parse(response);
-			} else {
-				data = response;
+				returnData.push({
+					json: data,
+				});
 			}
-
+		} catch (error) {
 			returnData.push({
-				json: data,
+				json: { error: error.message || error },
+				error,
 			});
 		}
-
 		return [returnData];
 	}
 }

@@ -1,4 +1,10 @@
-import { INodeType, INodeTypeDescription, NodeConnectionType, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
+import {
+	INodeType,
+	INodeTypeDescription,
+	NodeConnectionType,
+	INodeExecutionData,
+	IExecuteFunctions,
+} from 'n8n-workflow';
 import { BASE_URL } from '../constants';
 
 export class Order implements INodeType {
@@ -28,7 +34,7 @@ export class Order implements INodeType {
 				type: 'string',
 				default: '',
 				description: 'Folio or publicId of the order',
-				required: true
+				required: true,
 			},
 		],
 	};
@@ -36,31 +42,41 @@ export class Order implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
+		try {
+			for (let i = 0; i < items.length; i++) {
+				const reference = this.getNodeParameter('reference', i) as string;
+				const url = `${BASE_URL}/dev/v1/order/${reference}`;
 
-		for (let i = 0; i < items.length; i++) {
-			const reference = this.getNodeParameter('reference', i) as string;
-			const url = `${BASE_URL}/dev/v1/order/${reference}`;
+				const options = {
+					method: 'GET' as const,
+					url,
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
+				};
 
-			const options = {
-				method: 'GET' as const,
-				url,
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-			};
+				const response = await this.helpers.requestWithAuthentication.call(
+					this,
+					'jelpDeliveryApi',
+					options,
+				);
 
-			const response = await this.helpers.requestWithAuthentication.call(this, 'jelpDeliveryApi', options);
+				let data;
+				if (typeof response === 'string') {
+					data = JSON.parse(response);
+				} else {
+					data = response;
+				}
 
-			let data;
-			if (typeof response === 'string') {
-				data = JSON.parse(response);
-			} else {
-				data = response;
+				returnData.push({
+					json: data,
+				});
 			}
-
+		} catch (error) {
 			returnData.push({
-				json: data,
+				json: { error: error.message || error },
+				error,
 			});
 		}
 

@@ -1,4 +1,10 @@
-import { INodeType, INodeTypeDescription, IExecuteFunctions, NodeConnectionType } from 'n8n-workflow';
+import {
+	INodeType,
+	INodeTypeDescription,
+	NodeConnectionType,
+	INodeExecutionData,
+	IExecuteFunctions,
+} from 'n8n-workflow';
 import { BASE_URL } from '../constants';
 
 export class OrderCreate implements INodeType {
@@ -8,7 +14,8 @@ export class OrderCreate implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Create an order in Jelp Delivery, needs first name, phone, phone, branch, payment method code, total, subtotal, is paid, paid with',
+		description:
+			'Create an order in Jelp Delivery, needs first name, phone, phone, branch, payment method code, total, subtotal, is paid, paid with',
 		defaults: {
 			name: 'Create Order',
 		},
@@ -127,7 +134,7 @@ export class OrderCreate implements INodeType {
 				type: 'string',
 				default: '',
 				description: 'Comma-separated tags',
-      },
+			},
 			{
 				displayName: 'Vehicle Types',
 				name: 'vehicleTypes',
@@ -213,102 +220,117 @@ export class OrderCreate implements INodeType {
 		],
 	};
 
-
-
 	async execute(this: IExecuteFunctions) {
 		function generateUUID() {
-    return 'xxxxxxxxy'.replace(/[xy]/g, function(c) {
-        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-        return v.toString(16);
-    });
-}
-		const items = this.getInputData();
-		const returnData = [];
-		const credentials = await this.getCredentials('jelpDeliveryApi');
-		for (let i = 0; i < items.length; i++) {
-			const productsRaw = this.getNodeParameter('products', i) as string;
-			let products: any[] = [];
-			try {
-				products = JSON.parse(productsRaw);
-			} catch (e) {
-				products = [];
-			}
-
-			let trackingId = this.getNodeParameter('trackingId', i)
-			trackingId = (trackingId != null && trackingId != "")?trackingId:generateUUID()
-
-			let publicId =  this.getNodeParameter('publicId', i)
-			publicId = (publicId != null && publicId != '') ? publicId : trackingId
-
-			const orderData = {
-				customer: {
-					firstName: this.getNodeParameter('firstName', i),
-					firstLastName: this.getNodeParameter('firstLastName', i),
-					fullName: `${this.getNodeParameter('firstName', i)} ${this.getNodeParameter('firstLastName', i)}`,
-				},
-				address: {
-					references: this.getNodeParameter('references', i),
-					fullAddress: this.getNodeParameter('fullAddress', i),
-					latitude: this.getNodeParameter('latitude', i),
-					longitude: this.getNodeParameter('longitude', i),
-				},
-				phone: {
-					phone: this.getNodeParameter('phone', i),
-					countryCode: this.getNodeParameter('countryCode', i),
-					extension: this.getNodeParameter('extension', i) === '' ? null : this.getNodeParameter('extension', i),
-				},
-				branch: this.getNodeParameter('branch', i),
-				paymentMethod: this.getNodeParameter('paymentMethod', i),
-				total: this.getNodeParameter('total', i),
-				products: products,
-				subtotal: this.getNodeParameter('subtotal', i),
-				paidWith: this.getNodeParameter('paidWith', i),
-				isPaid: this.getNodeParameter('isPaid', i),
-				scheduledDate: this.getNodeParameter('scheduledDate', i) === '' ? null : this.getNodeParameter('scheduledDate', i),
-				tags:
-					this.getNodeParameter('tags', i) == null ||
-					String(this.getNodeParameter('tags', i)).trim() === ''
-						? []
-						: String(this.getNodeParameter('tags', i))
-								.split(',')
-								.map((t: string) => t.trim())
-								.filter((t: string) => t.length > 0),
-				vehicleTypes: this.getNodeParameter('vehicleTypes', i) != null
-					? String(this.getNodeParameter('vehicleTypes', i)).split(',').map((v: string) => v.trim())
-					: [],
-				isAutomaticAssignment: this.getNodeParameter('isAutomaticAssignment', i),
-				publicId: publicId,
-				trackingId: trackingId,
-				orderType: this.getNodeParameter('orderType', i),
-				pickupCode: this.getNodeParameter('pickupCode', i),
-				deliveryCode: this.getNodeParameter('deliveryCode', i),
-				config: {
-					cookingTime: this.getNodeParameter('cookingTime', i),
-				},
-				requiredSkills: String(this.getNodeParameter('requiredSkills', i) ?? '')
-					.split(',')
-					.map((s: string) => s.trim())
-					.filter((s: string) => s.length > 0),
-				prescriptionAction: this.getNodeParameter('prescriptionAction', i),
-				comment: this.getNodeParameter('comment', i),
-			};
-
-			const options = {
-				method: 'POST' as 'POST',
-				url: `${BASE_URL}/dev/v3/order`,
-				headers: {
-					'api-key': credentials.key,
-					'sign': credentials.sign,
-					'accept': 'application/json',
-					'content-type': 'application/json',
-				},
-				body: orderData,
-				json: true,
-			};
-			const response = await this.helpers.request(options);
-			returnData.push({ json: response });
+			return 'xxxxxxxxy'.replace(/[xy]/g, function (c) {
+				var r = (Math.random() * 16) | 0,
+					v = c == 'x' ? r : (r & 0x3) | 0x8;
+				return v.toString(16);
+			});
 		}
+		const items = this.getInputData();
+		const returnData: INodeExecutionData[] = [];
 
+		try {
+			const credentials = await this.getCredentials('jelpDeliveryApi');
+			for (let i = 0; i < items.length; i++) {
+				const productsRaw = this.getNodeParameter('products', i) as string;
+				let products: any[] = [];
+				try {
+					products = JSON.parse(productsRaw);
+				} catch (e) {
+					products = [];
+				}
+
+				let trackingId = this.getNodeParameter('trackingId', i);
+				trackingId = trackingId != null && trackingId != '' ? trackingId : generateUUID();
+
+				let publicId = this.getNodeParameter('publicId', i);
+				publicId = publicId != null && publicId != '' ? publicId : trackingId;
+
+				const orderData = {
+					customer: {
+						firstName: this.getNodeParameter('firstName', i),
+						firstLastName: this.getNodeParameter('firstLastName', i),
+						fullName: `${this.getNodeParameter('firstName', i)} ${this.getNodeParameter('firstLastName', i)}`,
+					},
+					address: {
+						references: this.getNodeParameter('references', i),
+						fullAddress: this.getNodeParameter('fullAddress', i),
+						latitude: this.getNodeParameter('latitude', i),
+						longitude: this.getNodeParameter('longitude', i),
+					},
+					phone: {
+						phone: this.getNodeParameter('phone', i),
+						countryCode: this.getNodeParameter('countryCode', i),
+						extension:
+							this.getNodeParameter('extension', i) === ''
+								? null
+								: this.getNodeParameter('extension', i),
+					},
+					branch: this.getNodeParameter('branch', i),
+					paymentMethod: this.getNodeParameter('paymentMethod', i),
+					total: this.getNodeParameter('total', i),
+					products: products,
+					subtotal: this.getNodeParameter('subtotal', i),
+					paidWith: this.getNodeParameter('paidWith', i),
+					isPaid: this.getNodeParameter('isPaid', i),
+					scheduledDate:
+						this.getNodeParameter('scheduledDate', i) === ''
+							? null
+							: this.getNodeParameter('scheduledDate', i),
+					tags:
+						this.getNodeParameter('tags', i) == null ||
+						String(this.getNodeParameter('tags', i)).trim() === ''
+							? []
+							: String(this.getNodeParameter('tags', i))
+									.split(',')
+									.map((t: string) => t.trim())
+									.filter((t: string) => t.length > 0),
+					vehicleTypes:
+						this.getNodeParameter('vehicleTypes', i) != null
+							? String(this.getNodeParameter('vehicleTypes', i))
+									.split(',')
+									.map((v: string) => v.trim())
+							: [],
+					isAutomaticAssignment: this.getNodeParameter('isAutomaticAssignment', i),
+					publicId: publicId,
+					trackingId: trackingId,
+					orderType: this.getNodeParameter('orderType', i),
+					pickupCode: this.getNodeParameter('pickupCode', i),
+					deliveryCode: this.getNodeParameter('deliveryCode', i),
+					config: {
+						cookingTime: this.getNodeParameter('cookingTime', i),
+					},
+					requiredSkills: String(this.getNodeParameter('requiredSkills', i) ?? '')
+						.split(',')
+						.map((s: string) => s.trim())
+						.filter((s: string) => s.length > 0),
+					prescriptionAction: this.getNodeParameter('prescriptionAction', i),
+					comment: this.getNodeParameter('comment', i),
+				};
+
+				const options = {
+					method: 'POST' as 'POST',
+					url: `${BASE_URL}/dev/v3/order`,
+					headers: {
+						'api-key': credentials.key,
+						sign: credentials.sign,
+						accept: 'application/json',
+						'content-type': 'application/json',
+					},
+					body: orderData,
+					json: true,
+				};
+				const response = await this.helpers.request(options);
+				returnData.push({ json: response });
+			}
+		} catch (error) {
+			returnData.push({
+				json: { error: error.message || error },
+				error,
+			});
+		}
 		return this.prepareOutputData(returnData);
 	}
 }

@@ -1,4 +1,10 @@
-import { INodeType, INodeTypeDescription, NodeConnectionType, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
+import {
+	INodeType,
+	INodeTypeDescription,
+	NodeConnectionType,
+	INodeExecutionData,
+	IExecuteFunctions,
+} from 'n8n-workflow';
 import { BASE_URL } from '../constants';
 
 export class OrderOverflowCancel implements INodeType {
@@ -27,7 +33,7 @@ export class OrderOverflowCancel implements INodeType {
 				name: 'order',
 				type: 'string',
 				default: '',
-			}
+			},
 		],
 	};
 
@@ -36,34 +42,42 @@ export class OrderOverflowCancel implements INodeType {
 		const returnData: INodeExecutionData[] = [];
 
 		for (let i = 0; i < items.length; i++) {
-			const url = `${BASE_URL}/api/v1/workspace-partnership/services/overflow/cancel`;
+			try {
+				const url = `${BASE_URL}/api/v1/workspace-partnership/services/overflow/cancel`;
 
-			const orderData = {
-				order: this.getNodeParameter('order', i),
-			};
+				const orderData = {
+					order: this.getNodeParameter('order', i),
+				};
+				const options = {
+					method: 'POST' as const,
+					url,
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
+					body: orderData,
+				};
 
-			const options = {
-				method: 'POST' as const,
-				url,
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-				body: orderData,
-			};
+				const response = await this.helpers.requestWithAuthentication.call(
+					this,
+					'jelpDeliveryApi',
+					options,
+				);
 
-			const response = await this.helpers.requestWithAuthentication.call(this, 'jelpDeliveryApi', options);
+				let data;
+				if (typeof response === 'string') {
+					data = JSON.parse(response);
+				} else {
+					data = response;
+				}
 
-			let data;
-			if (typeof response === 'string') {
-				data = JSON.parse(response);
-			} else {
-				data = response;
+				returnData.push({ json: data });
+			} catch (error) {
+				returnData.push({
+					json: { error: error.message || error },
+					error,
+				});
 			}
-
-			returnData.push({
-				json: data,
-			});
 		}
 
 		return [returnData];

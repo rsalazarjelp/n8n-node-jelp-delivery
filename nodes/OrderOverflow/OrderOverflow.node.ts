@@ -1,4 +1,10 @@
-import { INodeType, INodeTypeDescription, NodeConnectionType, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
+import {
+	INodeType,
+	INodeTypeDescription,
+	NodeConnectionType,
+	INodeExecutionData,
+	IExecuteFunctions,
+} from 'n8n-workflow';
 import { BASE_URL } from '../constants';
 
 export class OrderOverflow implements INodeType {
@@ -8,7 +14,8 @@ export class OrderOverflow implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Overflow an order in Jelp Delivery, needs public ID, partnership, workspace partnership and vehicle type',
+		description:
+			'Overflow an order in Jelp Delivery, needs public ID, partnership, workspace partnership and vehicle type',
 		defaults: {
 			name: 'Overflow order',
 		},
@@ -22,7 +29,7 @@ export class OrderOverflow implements INodeType {
 			},
 		],
 		properties: [
-		{
+			{
 				displayName: 'Public ID',
 				name: 'order',
 				type: 'string',
@@ -52,38 +59,48 @@ export class OrderOverflow implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
+		try {
+			for (let i = 0; i < items.length; i++) {
+				const url = `${BASE_URL}/api/v1/workspace-partnership/services/overflow`;
 
-		for (let i = 0; i < items.length; i++) {
-			const url = `${BASE_URL}/api/v1/workspace-partnership/services/overflow`;
+				const orderData = {
+					order: this.getNodeParameter('order', i),
+					partnership: this.getNodeParameter('partnership', i),
+					workspacePartnership: this.getNodeParameter('workspacePartnership', i),
+					vehicleType: this.getNodeParameter('vehicleType', i),
+				};
 
-			const orderData = {
-				order: this.getNodeParameter('order', i),
-				partnership: this.getNodeParameter('partnership', i),
-				workspacePartnership: this.getNodeParameter('workspacePartnership', i),
-				vehicleType: this.getNodeParameter('vehicleType', i),
-			};
+				const options = {
+					method: 'POST' as const,
+					url,
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
+					body: orderData,
+				};
 
-			const options = {
-				method: 'POST' as const,
-				url,
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-				body: orderData,
-			};
+				const response = await this.helpers.requestWithAuthentication.call(
+					this,
+					'jelpDeliveryApi',
+					options,
+				);
 
-			const response = await this.helpers.requestWithAuthentication.call(this, 'jelpDeliveryApi', options);
+				let data;
+				if (typeof response === 'string') {
+					data = JSON.parse(response);
+				} else {
+					data = response;
+				}
 
-			let data;
-			if (typeof response === 'string') {
-				data = JSON.parse(response);
-			} else {
-				data = response;
+				returnData.push({
+					json: data,
+				});
 			}
-
+		} catch (error) {
 			returnData.push({
-				json: data,
+				json: { error: error.message || error },
+				error,
 			});
 		}
 

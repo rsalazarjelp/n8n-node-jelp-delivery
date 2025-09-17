@@ -1,4 +1,10 @@
-import { INodeType, INodeTypeDescription, NodeConnectionType, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
+import {
+	INodeType,
+	INodeTypeDescription,
+	NodeConnectionType,
+	INodeExecutionData,
+	IExecuteFunctions,
+} from 'n8n-workflow';
 import { BASE_URL } from '../constants';
 
 export class OrderOverflowOptions implements INodeType {
@@ -8,7 +14,8 @@ export class OrderOverflowOptions implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'List overflow options for an order and info needed like providers that can deliver it, workspacePartnership, partnership of each provider, and quote for each provider',
+		description:
+			'List overflow options for an order and info needed like providers that can deliver it, workspacePartnership, partnership of each provider, and quote for each provider',
 		defaults: {
 			name: 'Order Overflow Options',
 		},
@@ -34,33 +41,42 @@ export class OrderOverflowOptions implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
+		try {
+			for (let i = 0; i < items.length; i++) {
+				const url = `${BASE_URL}/api/v1/order/${this.getNodeParameter('publicId', i)}/providers/quote`;
 
-		for (let i = 0; i < items.length; i++) {
-			const url = `${BASE_URL}/api/v1/order/${this.getNodeParameter('publicId', i)}/providers/quote`;
+				const options = {
+					method: 'GET' as const,
+					url,
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
+				};
 
-			const options = {
-				method: 'GET' as const,
-				url,
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-			};
+				const response = await this.helpers.requestWithAuthentication.call(
+					this,
+					'jelpDeliveryApi',
+					options,
+				);
 
-			const response = await this.helpers.requestWithAuthentication.call(this, 'jelpDeliveryApi', options);
+				let data;
+				if (typeof response === 'string') {
+					data = JSON.parse(response);
+				} else {
+					data = response;
+				}
 
-			let data;
-			if (typeof response === 'string') {
-				data = JSON.parse(response);
-			} else {
-				data = response;
+				returnData.push({
+					json: data,
+				});
 			}
-
+		} catch (error) {
 			returnData.push({
-				json: data,
+				json: { error: error.message || error },
+				error,
 			});
 		}
-
 		return [returnData];
 	}
 }

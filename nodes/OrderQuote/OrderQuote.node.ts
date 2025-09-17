@@ -1,4 +1,10 @@
-import { INodeType, INodeTypeDescription, NodeConnectionType, INodeExecutionData, IExecuteFunctions } from 'n8n-workflow';
+import {
+	INodeType,
+	INodeTypeDescription,
+	NodeConnectionType,
+	INodeExecutionData,
+	IExecuteFunctions,
+} from 'n8n-workflow';
 import { BASE_URL } from '../constants';
 
 export class OrderQuote implements INodeType {
@@ -8,7 +14,8 @@ export class OrderQuote implements INodeType {
 		icon: { light: 'file:Icon.svg', dark: 'file:Icon.svg' },
 		group: ['transform'],
 		version: 1,
-		description: 'Quote an order in Jelp Delivery, needs customer full name, latitude, longitude, phone, country code, branch, payment method, total, is paid, full address, city, state, zip code, items and partnership',
+		description:
+			'Quote an order in Jelp Delivery, needs customer full name, latitude, longitude, phone, country code, branch, payment method, total, is paid, full address, city, state, zip code, items and partnership',
 		defaults: {
 			name: 'Quote Order',
 		},
@@ -141,71 +148,77 @@ export class OrderQuote implements INodeType {
 				name: 'partnership',
 				type: 'string',
 				default: '',
-			}
+			},
 		],
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: INodeExecutionData[] = [];
+		try {
+			for (let i = 0; i < items.length; i++) {
+				const url = `${BASE_URL}/api/v1/pre-order/overflow/quote`;
 
-		for (let i = 0; i < items.length; i++) {
-			const url = `${BASE_URL}/api/v1/pre-order/overflow/quote`;
+				const orderData = {
+					total: this.getNodeParameter('total', i),
+					partnership: this.getNodeParameter('partnership', i),
+					isPaid: this.getNodeParameter('isPaid', i),
+					paymentMethod: this.getNodeParameter('paymentMethod', i),
+					phone: {
+						phone: this.getNodeParameter('phone', i),
+						countryCode: this.getNodeParameter('countryCode', i),
+					},
+					address: {
+						street: this.getNodeParameter('street', i),
+						neighborhood: this.getNodeParameter('neighborhood', i),
+						interiorNumber: this.getNodeParameter('interiorNumber', i),
+						exteriorNumber: this.getNodeParameter('exteriorNumber', i),
+						zipCode: this.getNodeParameter('zipCode', i),
+						cityName: this.getNodeParameter('cityName', i),
+						fullAddress: this.getNodeParameter('fullAddress', i),
+						addressType: this.getNodeParameter('addressType', i),
+						references: this.getNodeParameter('references', i),
+						location: [this.getNodeParameter('longitude', i), this.getNodeParameter('latitude', i)],
+					},
+					branch: this.getNodeParameter('branch', i),
+					customerData: {
+						fullName: this.getNodeParameter('fullName', i),
+					},
+				};
 
-			const orderData = {
-				total: this.getNodeParameter('total', i),
-				partnership: this.getNodeParameter('partnership', i),
-				isPaid: this.getNodeParameter('isPaid', i),
-				paymentMethod: this.getNodeParameter('paymentMethod', i),
-				phone: {
-					phone: this.getNodeParameter('phone', i),
-					countryCode: this.getNodeParameter('countryCode', i),
-				},
-				address: {
-					street: this.getNodeParameter('street', i),
-					neighborhood: this.getNodeParameter('neighborhood', i),
-					interiorNumber: this.getNodeParameter('interiorNumber', i),
-					exteriorNumber: this.getNodeParameter('exteriorNumber', i),
-					zipCode: this.getNodeParameter('zipCode', i),
-					cityName: this.getNodeParameter('cityName', i),
-					fullAddress: this.getNodeParameter('fullAddress', i),
-					addressType: this.getNodeParameter('addressType', i),
-					references: this.getNodeParameter('references', i),
-					location: [
-						this.getNodeParameter('longitude', i),
-						this.getNodeParameter('latitude', i),
-					],
-				},
-				branch: this.getNodeParameter('branch', i),
-				customerData: {
-					fullName: this.getNodeParameter('fullName', i),
-				},
-			};
+				const options = {
+					method: 'POST' as const,
+					url,
+					headers: {
+						Accept: 'application/json',
+						'Content-Type': 'application/json',
+					},
+					body: orderData,
+				};
 
-			const options = {
-				method: 'POST' as const,
-				url,
-				headers: {
-					Accept: 'application/json',
-					'Content-Type': 'application/json',
-				},
-				body: orderData,
-			};
+				const response = await this.helpers.requestWithAuthentication.call(
+					this,
+					'jelpDeliveryApi',
+					options,
+				);
 
-			const response = await this.helpers.requestWithAuthentication.call(this, 'jelpDeliveryApi', options);
+				let data;
+				if (typeof response === 'string') {
+					data = JSON.parse(response);
+				} else {
+					data = response;
+				}
 
-			let data;
-			if (typeof response === 'string') {
-				data = JSON.parse(response);
-			} else {
-				data = response;
+				returnData.push({
+					json: data,
+				});
 			}
-
+		} catch (error) {
 			returnData.push({
-				json: data,
+				json: { error: error.message || error },
+				error,
 			});
 		}
-
 		return [returnData];
 	}
 }
