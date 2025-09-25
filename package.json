@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-jelp-delivery",
-	"version": "0.1.26",
+	"version": "0.1.30",
 	"description": "Jelp Delivery official n8n node",
 	"keywords": [
 		"n8n-nodes-jelp-delivery",
@@ -45,7 +45,8 @@
 			"dist/nodes/OrderOverflowOptions/OrderOverflowOptions.node.js",
 			"dist/nodes/OrderQuote/OrderQuote.node.js",
 			"dist/nodes/OrderStatusChange/OrderStatusChange.node.js",
-			"dist/nodes/PaymentMethods/PaymentMethods.node.js"
+			"dist/nodes/PaymentMethods/PaymentMethods.node.js",
+			"dist/nodes/OrderLogComment/OrderLogComment.node.js"
 		]
 	},
 	"devDependencies": {

@@ -217,6 +217,12 @@ export class OrderCreate implements INodeType {
 				description: 'Product details in JSON format',
 				placeholder: '[{"sku":"123","name":"Product 1","price":100,"quantity":1}]',
 			},
+			{
+				displayName: 'User Name',
+				name: 'userName',
+				type: 'string',
+				default: '',
+			},
 		],
 	};
 
@@ -249,6 +255,9 @@ export class OrderCreate implements INodeType {
 				publicId = publicId != null && publicId != '' ? publicId : trackingId;
 
 				const orderData = {
+					userData: {
+						fullName: this.getNodeParameter('userName', i),
+					},
 					customer: {
 						firstName: this.getNodeParameter('firstName', i),
 						firstLastName: this.getNodeParameter('firstLastName', i),
