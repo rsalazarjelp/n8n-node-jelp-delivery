@@ -41,6 +41,13 @@ export class OrderStatusChange implements INodeType {
 				type: 'string',
 				default: '',
 			},
+			{
+				displayName: 'Ended Reason',
+				name: 'endedReason',
+				type: 'string',
+				default: '',
+				description: 'Reason for ending the order (optional)',
+			},
 		],
 	};
 
@@ -51,10 +58,15 @@ export class OrderStatusChange implements INodeType {
 			for (let i = 0; i < items.length; i++) {
 				const url = `${BASE_URL}/dev/v3/order/status/update`;
 
-				const orderData = {
+				const orderData: Record<string, any> = {
 					referenceId: this.getNodeParameter('order', i),
 					status: this.getNodeParameter('status', i),
 				};
+
+				const endedReason = this.getNodeParameter('endedReason', i) as string;
+				if (endedReason !== '' && endedReason !== null && endedReason !== undefined) {
+					orderData.endedReason = endedReason;
+				}
 
 				const options = {
 					method: 'POST' as const,
